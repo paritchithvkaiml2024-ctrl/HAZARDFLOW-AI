@@ -1,0 +1,106 @@
+rrunapiVersion: v1
+kind: Namespace
+metadata:
+  name: hazardflow-fabric
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingestion-fabric
+  namespace: hazardflow-fabric
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ingestion-fabric
+  template:
+    metadata:
+      labels:
+        app: ingestion-fabric
+    spec:
+      containers:
+      - name: ingestion-service
+        image: hazardflow/ingestion-service:latest
+        resources:
+          limits:
+            cpu: "2000m"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "256Mi"
+        ports:
+        - containerPort: 50051
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inference-worker
+  namespace: hazardflow-fabric
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: inference-worker
+  template:
+    metadata:
+      labels:
+        app: inference-worker
+    spec:
+      containers:
+      - name: inference-service
+        image: hazardflow/inference-worker:latest
+        resources:
+          limits:
+            cpu: "4000m"
+            memory: "2Gi"
+          requests:
+            cpu: "1000m"
+            memory: "512Mi"
+        ports:
+        - containerPort: 50052
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: safety-twin-state
+  namespace: hazardflow-fabric
+spec:
+  serviceName: "safety-twin"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: safety-twin
+  template:
+    metadata:
+      labels:
+        app: safety-twin
+    spec:
+      containers:
+      - name: safety-twin-service
+        image: hazardflow/safety-twin-service:latest
+        ports:
+        - containerPort: 50053
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ingestion-hpa
+  namespace: hazardflow-fabric
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ingestion-fabric
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70

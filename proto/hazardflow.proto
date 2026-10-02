@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package hazardflow;
+
+// Risk severity classification for prioritization
+enum RiskSeverity {
+    SEVERITY_UNSPECIFIED = 0;
+    SEVERITY_LOW = 1;
+    SEVERITY_MEDIUM = 2;
+    SEVERITY_HIGH = 3;
+    SEVERITY_CRITICAL = 4;
+}
+
+// Operational state of an industrial zone
+enum ZoneState {
+    ZONE_STATE_NORMAL = 0;
+    ZONE_STATE_WARNING = 1;
+    ZONE_STATE_ELEVATED = 2;
+    ZONE_STATE_CRITICAL = 3;
+    ZONE_STATE_LOCKDOWN = 4;
+}
+
+// Ingested safety event payload
+message SafetyEvent {
+    string event_id = 1;
+    string zone_id = 2;
+    string sensor_id = 3;
+    string event_type = 4; // "PPE_VIOLATION", "GAS_LEAK", "THERMAL_SPIKE", "VIBRATION_ANOMALY", "FALL_DETECTED", "PROXIMITY_HAZARD"
+    RiskSeverity severity = 5;
+    double sensor_value = 6;
+    double threshold_value = 7;
+    int64 timestamp_ms = 8;
+    map<string, string> metadata = 9;
+}
+
+// Request to prioritize and route an event
+message IngestionResponse {
+    string event_id = 1;
+    bool accepted = 2;
+    RiskSeverity assigned_priority = 3;
+    int64 queued_latency_us = 4;
+    string routing_lane = 5; // "EXPRESS_CRITICAL", "HIGH_THROUGHPUT", "ASYNC_BATCH"
+}
+
+// Inference request sent to ONNX worker
+message InferenceRequest {
+    string event_id = 1;
+    string zone_id = 2;
+    repeated double feature_vector = 3; // [temp_norm, vib_norm, ppe_count, prox_norm, prev_risk_score, duration_s]
+    string requested_model_version = 4; // e.g., "safety-ann-v2.1.0" or "latest"
+    int64 timestamp_ms = 5;
+}
+
+// Model-aware inference decision with full traceability
+message InferenceResponse {
+    string event_id = 1;
+    string zone_id = 2;
+    bool is_anomaly = 3;
+    double anomaly_score = 4;
+    double confidence = 5;
+    RiskSeverity computed_risk = 6;
+    
+    // Model Traceability & Audit Metadata
+    string model_name = 7;
+    string model_version = 8;
+    string mlflow_run_id = 9;
+    string model_signature_hash = 10;
+    
+    int64 inference_time_us = 11;
+    repeated string recommended_actions = 12;
+}
+
+// Live Safety Twin Zone State (Cached in Redis)
+message LiveZoneTwin {
+    string zone_id = 1;
+    string zone_name = 2;
+    ZoneState current_state = 3;
+    RiskSeverity worker_risk = 4;
+    double current_temperature = 5;
+    double current_vibration = 6;
+    int32 active_ppe_violations = 7;
+    int32 active_machine_anomalies = 8;
+    int32 active_personnel_count = 9;
+    double cumulative_risk_index = 10;
+    int64 last_updated_ms = 11;
+    repeated string active_alert_ids = 12;
+    string primary_active_threat = 13;
+}
+
+message GetZoneStateRequest {
+    string zone_id = 1;
+}
+
+message GetAllZonesStateResponse {
+    repeated LiveZoneTwin zones = 1;
+    int64 cluster_timestamp_ms = 2;
+    int32 total_critical_zones = 3;
+}
+
+// Feedback Loop Metric Update
+message SafetyFeedbackEvent {
+    string event_id = 1;
+    string model_version = 2;
+    bool intervention_successful = 3;
+    string actual_outcome = 4; // "FALSE_POSITIVE", "TRUE_POSITIVE_MITIGATED", "NEAR_MISS", "UNRESOLVED"
+    int64 response_time_ms = 5;
+    int64 timestamp_ms = 6;
+}
+
+message FeedbackAck {
+    bool recorded = 1;
+    string mlflow_experiment_id = 2;
+    int64 total_feedback_samples = 3;
+}
+
+// gRPC Service: Ingestion & Risk-Aware Routing
+service IngestionFabricService {
+    rpc IngestEvent (SafetyEvent) returns (IngestionResponse);
+    rpc StreamSafetyEvents (stream SafetyEvent) returns (stream IngestionResponse);
+}
+
+// gRPC Service: Model-Aware ONNX Inference
+service SafetyInferenceService {
+    rpc PredictSafetyAnomaly (InferenceRequest) returns (InferenceResponse);
+}
+
+// gRPC Service: Live Safety Twin State (Redis Layer)
+service SafetyTwinService {
+    rpc GetZoneState (GetZoneStateRequest) returns (LiveZoneTwin);
+    rpc GetAllZones (GetAllZonesStateResponse) returns (GetAllZonesStateResponse);
+    rpc RecordInterventionFeedback (SafetyFeedbackEvent) returns (FeedbackAck);
+}

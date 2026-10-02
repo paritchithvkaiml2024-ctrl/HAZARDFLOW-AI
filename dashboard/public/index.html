@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HazardFlow AI — Distributed Safety Intelligence Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- TOP NAVIGATION & STATUS BAR -->
+    <header class="top-nav">
+      <div class="brand-section">
+        <div class="logo-orb">
+          <div class="orb-core"></div>
+          <div class="orb-pulse"></div>
+        </div>
+        <div class="brand-text">
+          <h1>HAZARDFLOW <span class="badge-ai">AI</span></h1>
+          <span class="sub-brand">DISTRIBUTED SAFETY INTELLIGENCE FABRIC • v2.4</span>
+        </div>
+      </div>
+
+      <div class="system-pills">
+        <div class="pill status-live">
+          <span class="dot-pulse"></span>
+          <span>TOKIO FABRIC: ACTIVE</span>
+        </div>
+        <div class="pill">
+          <span class="label">KAFKA:</span>
+          <span class="val">1.4M+ EVT/DAY</span>
+        </div>
+        <div class="pill">
+          <span class="label">P99 SLA:</span>
+          <span class="val highlight-cyan">&lt; 58.7 ms</span>
+        </div>
+        <div class="pill">
+          <span class="label">MODEL ACCURACY:</span>
+          <span class="val highlight-green">98.9% F1</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-emergency-drill" class="btn-warning-glow">🚨 TRIGGER CRITICAL SPIKE</button>
+        <button id="btn-burst-test" class="btn-neon-outline">⚡ 5K BATCH STRESS TEST</button>
+      </div>
+    </header>
+
+    <!-- MAIN GRID LAYOUT -->
+    <main class="dashboard-grid">
+      
+      <!-- LEFT COLUMN: LIVE SAFETY TWIN (REDIS OPERATIONAL STATE) -->
+      <section class="panel panel-twin">
+        <div class="panel-header">
+          <div class="header-title">
+            <span class="icon">🏢</span>
+            <h2>LIVE SAFETY TWIN</h2>
+            <span class="badge-tech">REDIS STATE LAYER</span>
+          </div>
+          <span class="live-tag">● CONTINUOUS OPERATIONAL AWARENESS</span>
+        </div>
+
+        <div class="zones-container" id="zones-container">
+          <!-- Dynamically populated zones -->
+        </div>
+
+        <!-- ZONE DETAIL HIGHLIGHT (ZONE 4 LIVE METRICS) -->
+        <div class="active-threat-card" id="active-threat-card">
+          <div class="threat-header">
+            <span class="threat-icon">⚠️</span>
+            <div class="threat-title-wrap">
+              <span class="threat-zone">ZONE-04 — BLAST FURNACE & HIGH HEAT FOUNDRY</span>
+              <span class="threat-state state-critical">STATUS: CRITICAL ESCALATION</span>
+            </div>
+          </div>
+          <div class="threat-grid">
+            <div class="metric-box">
+              <span class="m-label">Worker Risk</span>
+              <span class="m-val critical-text">HIGH (CRITICAL)</span>
+            </div>
+            <div class="metric-box">
+              <span class="m-label">Temperature</span>
+              <span class="m-val" id="z4-temp">79.4°C ↑</span>
+            </div>
+            <div class="metric-box">
+              <span class="m-label">PPE Violations</span>
+              <span class="m-val highlight-amber" id="z4-ppe">3 Active</span>
+            </div>
+            <div class="metric-box">
+              <span class="m-label">Machine Anomalies</span>
+              <span class="m-val highlight-red" id="z4-mach">2 Detected</span>
+            </div>
+          </div>
+          <div class="threat-footer">
+            <span class="threat-detail">🔥 Primary Threat: <strong>Thermal Runaway & Harmonic Resonance</strong></span>
+            <button class="btn-feedback" id="btn-mitigate">Resolve & Feed to MLflow</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CENTER COLUMN: RISK-AWARE EVENT FABRIC (TOKIO PRIORITY QUEUES) -->
+      <section class="panel panel-fabric">
+        <div class="panel-header">
+          <div class="header-title">
+            <span class="icon">⚡</span>
+            <h2>RISK-AWARE EVENT FABRIC</h2>
+            <span class="badge-tech">RUST + TOKIO QUEUES</span>
+          </div>
+          <span class="live-tag">«PRIORITY FOLLOWS SAFETY CRITICALITY»</span>
+        </div>
+
+        <!-- 4-LANE PRIORITY VISUALIZER -->
+        <div class="priority-lanes">
+          <div class="lane express-lane">
+            <div class="lane-info">
+              <div class="lane-title">
+                <span class="lane-indicator critical-bg"></span>
+                <strong>EXPRESS CRITICAL LANE</strong>
+              </div>
+              <span class="lane-badge">0-MS QUEUE DELAY • ZERO DROP</span>
+            </div>
+            <div class="lane-bar-wrap">
+              <div class="lane-bar critical-bar" style="width: 88%;"></div>
+            </div>
+            <div class="lane-stats">
+              <span>Fires, Gas Leaks, Arc Flash</span>
+              <span class="mono-num" id="stat-express">84,200 evts</span>
+            </div>
+          </div>
+
+          <div class="lane high-lane">
+            <div class="lane-info">
+              <div class="lane-title">
+                <span class="lane-indicator high-bg"></span>
+                <strong>HIGH-THROUGHPUT PRIORITY</strong>
+              </div>
+              <span class="lane-badge">SUB-20MS SLA</span>
+            </div>
+            <div class="lane-bar-wrap">
+              <div class="lane-bar high-bar" style="width: 62%;"></div>
+            </div>
+            <div class="lane-stats">
+              <span>PPE Breaches, Vibration Drift</span>
+              <span class="mono-num" id="stat-high">385,400 evts</span>
+            </div>
+          </div>
+
+          <div class="lane batch-lane">
+            <div class="lane-info">
+              <div class="lane-title">
+                <span class="lane-indicator batch-bg"></span>
+                <strong>ASYNC BATCH LANE</strong>
+              </div>
+              <span class="lane-badge">LOAD-SHEDDED TELEMETRY</span>
+            </div>
+            <div class="lane-bar-wrap">
+              <div class="lane-bar batch-bar" style="width: 45%;"></div>
+            </div>
+            <div class="lane-stats">
+              <span>Heartbeats, Environmental Ambient</span>
+              <span class="mono-num" id="stat-batch">951,350 evts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE STREAMING EVENT AUDIT FEED -->
+        <div class="event-feed-header">
+          <span>REAL-TIME INGESTION LOG (KAFKA → TOKIO → gRPC)</span>
+          <span class="feed-rate" id="feed-rate">1,620 evts/sec</span>
+        </div>
+        <div class="event-stream" id="event-stream">
+          <!-- Real-time log entries inserted here -->
+        </div>
+
+        <!-- CUSTOM EVENT INJECTION CONTROLS -->
+        <div class="custom-inject-bar">
+          <span class="inject-title">Simulate Ingest:</span>
+          <button class="inject-chip" data-zone="ZONE-01" data-sev="CRITICAL" data-type="TOXIC_GAS_SPIKE">☣️ Zone 1 Gas Leak</button>
+          <button class="inject-chip" data-zone="ZONE-03" data-sev="HIGH" data-type="HYDRAULIC_SURGE">💥 Zone 3 Press Surge</button>
+          <button class="inject-chip" data-zone="ZONE-02" data-sev="MEDIUM" data-type="ARC_PROXIMITY">⚡ Zone 2 Arc Breach</button>
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN: MODEL-AWARE TRACEABILITY & PREDICTIVE FEEDBACK -->
+      <section class="panel panel-intelligence">
+        
+        <!-- MODEL-AWARE DECISION TRACEABILITY (ONNX + MLflow) -->
+        <div class="sub-panel">
+          <div class="panel-header">
+            <div class="header-title">
+              <span class="icon">🧠</span>
+              <h2>MODEL-AWARE TRACEABILITY</h2>
+              <span class="badge-tech">ONNX + MLFLOW</span>
+            </div>
+          </div>
+
+          <div class="model-meta-card">
+            <div class="meta-row">
+              <span class="meta-k">Active Model:</span>
+              <span class="meta-v highlight-cyan">HazardFlow-DeepSafetyClassifier</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-k">Version Lineage:</span>
+              <span class="meta-v badge-version">v2.4.1-onnx (Auditable)</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-k">MLflow Run ID:</span>
+              <span class="meta-v mono-text">run_hf_98a72cf109e</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-k">Signature Hash:</span>
+              <span class="meta-v mono-text">sha256:4a38f7e29c...</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-k">Inference Latency:</span>
+              <span class="meta-v highlight-green" id="model-latency">14.8 ms (Target &lt;80ms)</span>
+            </div>
+          </div>
+
+          <div class="decision-box" id="latest-decision-box">
+            <div class="decision-tag">LATEST AI DECISION & RECOMMENDED ACTION</div>
+            <div class="decision-text" id="decision-text">🚨 EMERGENCY: Zone 4 acoustic lockdown initiated. Automated machinery interlock engaged.</div>
+            <div class="confidence-bar-wrap">
+              <div class="confidence-fill" style="width: 98.9%;"></div>
+              <span class="confidence-label">Confidence: 98.92% (F1: 0.988)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PREDICTIVE SAFETY FEEDBACK LOOP & SPARK PATTERNS -->
+        <div class="sub-panel">
+          <div class="panel-header">
+            <div class="header-title">
+              <span class="icon">🔄</span>
+              <h2>PREDICTIVE FEEDBACK LOOP</h2>
+              <span class="badge-tech">SPARK + MLFLOW</span>
+            </div>
+          </div>
+
+          <div class="feedback-loop-diagram">
+            <div class="loop-step active">
+              <span class="step-num">1</span>
+              <span class="step-text">Ingest</span>
+            </div>
+            <div class="loop-arrow">→</div>
+            <div class="loop-step active">
+              <span class="step-num">2</span>
+              <span class="step-text">Infer</span>
+            </div>
+            <div class="loop-arrow">→</div>
+            <div class="loop-step active">
+              <span class="step-num">3</span>
+              <span class="step-text">Spark Pattern</span>
+            </div>
+            <div class="loop-arrow">→</div>
+            <div class="loop-step active">
+              <span class="step-num">4</span>
+              <span class="step-text">Twin State</span>
+            </div>
+            <div class="loop-arrow">→</div>
+            <div class="loop-step active">
+              <span class="step-num">5</span>
+              <span class="step-text">Active Learn</span>
+            </div>
+          </div>
+
+          <div class="spark-pattern-alert" id="spark-pattern-alert">
+            <div class="spark-header">
+              <span class="spark-icon">✨</span>
+              <strong>SPARK TEMPORAL CO-OCCURRENCE DETECTED</strong>
+            </div>
+            <div class="spark-body">
+              Pattern: <code>Temp ↑ + Vibration ↑ + Repeated PPE Breach</code> in 15-min rolling window.
+            </div>
+            <div class="spark-footer">
+              <span>Escalated to: <strong>Preventive Intervention</strong></span>
+              <span class="spark-badge">SAMPLES: 14,209</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- FOOTER ARCHITECTURE BAR -->
+    <footer class="system-footer">
+      <div class="arch-tagline">
+        <strong>HazardFlow AI Core Stack:</strong> Rust 2021 • Tokio • Tonic gRPC • Apache Kafka • Redis 7 • MongoDB 6 • PySpark • ONNX Runtime • MLflow • Kubernetes HPA
+      </div>
+      <div class="foot-stats">
+        <span>Total Events Ingested: <strong id="total-evts-counter" class="mono-num">1,420,950</strong></span>
+        <span>•</span>
+        <span>Sub-80ms Compliance: <strong class="highlight-green">99.84%</strong></span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
